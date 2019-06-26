@@ -1,6 +1,4 @@
-from __future__ import print_function
-
-import cPickle as pickle
+import pickle as pickle
 import glob
 import numpy as np
 import os
