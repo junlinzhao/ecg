@@ -49,22 +49,26 @@ def resnet_block(
     from keras.layers import MaxPooling1D
     from keras.layers.core import Lambda
 
+#这个函数的意义是：创造一个和x维度相同的全零y，并将y沿着x的第三维度拼接到一起
+#想象一个x是三维向量shape为（2，2，2）的一个立方体，那么则创建了一个(2,2,2)的shape立方体但是数值全零，并将立方体拼接到x上，成为(2,2,4)的参数长方体，但是有一半是0
     def zeropad(x):
         y = K.zeros_like(x)
         return K.concatenate([x, y], axis=2)
 
     def zeropad_output_shape(input_shape):
         shape = list(input_shape)
-        assert len(shape) == 3
-        shape[2] *= 2
+        assert len(shape) == 3  #也就是shape应该是3维度的，否则程序退出
+        shape[2] *= 2   #因为扩展了第三维，所以第三个向量扩大一倍
         return tuple(shape)
-
+#似乎是增加了一个旁路
     shortcut = MaxPooling1D(pool_size=subsample_length)(layer)
+    #zero_pad = index是4的倍数 并且不是index=0的时候为True
     zero_pad = (block_index % params["conv_increase_channels_at"]) == 0 \
         and block_index > 0
+#lambda函数的意义是：对shortcut用zeropad函数，然后输出层zeropad_output_shape的样子（如果shortcut是222的立方体参数，那么通过lambda后shortcut是224的立方体，但是拼接的一半是0）
     if zero_pad is True:
         shortcut = Lambda(zeropad, output_shape=zeropad_output_shape)(shortcut)
-
+#conv_num_skip 是2
     for i in range(params["conv_num_skip"]):
         if not (block_index == 0 and i == 0):
             layer = _bn_relu(

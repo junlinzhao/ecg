@@ -133,12 +133,15 @@ def make_json(save_path, dataset):
 
 
 if __name__ == "__main__":
-    data_dir = "/deep/group/med/irhythm/ecg/clean_30sec_recs/"
+    # data_dir = "/deep/group/med/irhythm/ecg/clean_30sec_recs/"
+    data_dir="/Users/mikepc/Desktop/study/ECGDeepNN/ecg/examples/irhythm/"
+    # blacklist_paths = [
+    #         os.path.join(data_dir, "/CARDIOL_MAY_2017/"),
+    #         os.path.join(data_dir, "batches/kids_blacklist"),
+    #         os.path.join(data_dir, "batches/vf_blacklist")]
     blacklist_paths = [
-            os.path.join(data_dir, "label_review/CARDIOL_MAY_2017/"),
-            os.path.join(data_dir, "batches/kids_blacklist"),
-            os.path.join(data_dir, "batches/vf_blacklist")]
-    data_path = os.path.join(data_dir, "batches")
+            os.path.join(data_dir, "CARDIOL_MAY_2017/")]
+    data_path = os.path.join(data_dir, "CARDIOL_MAY_2017/")
     dev_frac = 0.1
     train, dev = load_train(data_path, dev_frac, blacklist_paths)
     make_json("train.json", train)

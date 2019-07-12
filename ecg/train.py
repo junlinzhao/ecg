@@ -43,7 +43,25 @@ def train(args, params):
         "input_shape": [None, 1],
         "num_categories": len(preproc.classes)
     })
-
+    '''
+    <class 'dict'>: 
+    {'conv_subsample_lengths': [1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2], 
+    'conv_filter_length': 16, 
+    'conv_num_filters_start': 32,
+     'conv_init': 'he_normal', 
+     'conv_activation': 'relu', 
+     'conv_dropout': 0.2, 
+     'conv_num_skip': 2, 
+     'conv_increase_channels_at': 4, 
+     'learning_rate': 0.001, 
+     'batch_size': 32, 
+     'train': '../examples/cinc17/train.json', 
+     'dev': '../examples/cinc17/dev.json', 
+     'generator': True, 
+     'save_dir': 'saved', 
+     'input_shape': [None, 1], 
+     'num_categories': 4}
+    '''
     model = network.build_network(**params)
 
     stopping = keras.callbacks.EarlyStopping(patience=8)
@@ -58,6 +76,10 @@ def train(args, params):
         save_best_only=False)
 
     batch_size = params.get("batch_size", 32)
+
+    #把网络结构打出来
+    model.summary()
+
 
     if params.get("generator", False):
         train_gen = load.data_generator(batch_size, preproc, *train)
@@ -85,5 +107,10 @@ if __name__ == '__main__':
     parser.add_argument("--experiment", "-e", help="tag with experiment name",
                         default="default")
     args = parser.parse_args()
+    print(args)
+    # args.config_file="../"+args.config_file
     params = json.load(open(args.config_file, 'r'))
+    print(params)
+    params["train"]="../"+ params["train"]
+    params["dev"] = "../" + params["dev"]
     train(args, params)
