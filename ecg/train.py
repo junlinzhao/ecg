@@ -78,7 +78,7 @@ def train(args, params):
     batch_size = params.get("batch_size", 32)
 
     #把网络结构打出来
-    model.summary()
+    # model.summary()
 
 
     if params.get("generator", False):
