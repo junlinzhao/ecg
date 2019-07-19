@@ -100,6 +100,10 @@ def train(args, params):
             epochs=MAX_EPOCHS,
             validation_data=(dev_x, dev_y),
             callbacks=[checkpointer, reduce_lr, stopping])
+    #保存训练结果
+    model.save('my_model.h5')
+    #返回训练之后的模型
+    return model
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -107,10 +111,14 @@ if __name__ == '__main__':
     parser.add_argument("--experiment", "-e", help="tag with experiment name",
                         default="default")
     args = parser.parse_args()
-    print(args)
-    # args.config_file="../"+args.config_file
+
+    # print(args)
+    # args=object()
+    args.config_file="../examples/cinc17/config.json"
+    args.experiment='cinc17'
     params = json.load(open(args.config_file, 'r'))
     print(params)
     params["train"]="../"+ params["train"]
     params["dev"] = "../" + params["dev"]
-    train(args, params)
+    model= train(args, params)
+
